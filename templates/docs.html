@@ -1,0 +1,65 @@
+{{/* The documentation: the list of documents, the document, and its
+   headings side by side, folding into one column on a phone. */}}
+
+{{define "sidebar"}}<nav class="sidebar" aria-label="Documentation">
+    <a href="/docs/"{{if not .Doc}} aria-current="page"{{end}}>Welcome</a>
+    {{- range .Docs}}
+    <a href="/docs/{{.Slug}}/"{{if and $.Doc (eq .Slug $.Doc.Slug)}} aria-current="page"{{end}}>{{.Title}}</a>
+    {{- end}}
+  </nav>{{end}}
+
+{{define "pager"}}<nav class="pager">
+      {{- with .Prev}}<a class="prev" href="/docs/{{.Slug}}/"><span>Previous</span>{{.Title}}</a>{{end}}
+      {{- with .Next}}<a class="next" href="/docs/{{.Slug}}/"><span>Next</span>{{.Title}}</a>{{end}}
+    </nav>{{end}}
+
+{{define "doc"}}{{template "head" .}}
+<body class="docs">
+
+{{template "bar" .}}
+
+<div class="docs-layout">
+  {{template "sidebar" .}}
+  <main class="prose">
+    <p class="crumbs"><a href="/docs/">Docs</a> / {{.Doc.Title}}</p>
+    <h1>{{.Doc.Heading}}</h1>
+    <p class="lead">{{.Doc.Blurb}}</p>
+{{.Doc.Body}}
+    <p class="edit"><a href="https://github.com/spinneydev/canopy/blob/main/{{.Doc.Src}}">View this page's source on GitHub</a></p>
+    {{template "pager" .}}
+  </main>
+  {{- if .Doc.TOC}}
+  <nav class="on-page" aria-label="On this page">
+    {{- range .Doc.TOC}}
+    <a href="#{{.ID}}">{{.Text}}</a>
+    {{- end}}
+  </nav>
+  {{- end}}
+</div>
+
+{{template "foot"}}{{end}}
+
+{{define "welcome"}}{{template "head" .}}
+<body class="docs">
+
+{{template "bar" .}}
+
+<div class="docs-layout">
+  {{template "sidebar" .}}
+  <main class="prose">
+    <h1>Documentation</h1>
+    <p class="lead">Everything about running your own canopy server. Start
+    with <a href="/docs/deploy/">deploying</a> to put it on a server, then
+    <a href="/docs/usage/">using</a> it day to day. To try it on your own
+    machine first, <a href="/clone/">clone it and run the demo</a>.</p>
+    <dl class="doc-index">
+      {{- range .Docs}}
+      <dt><a href="/docs/{{.Slug}}/">{{.Title}}</a></dt>
+      <dd>{{.Blurb}}</dd>
+      {{- end}}
+    </dl>
+    {{template "pager" .}}
+  </main>
+</div>
+
+{{template "foot"}}{{end}}

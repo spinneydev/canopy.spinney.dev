@@ -1,0 +1,5 @@
+# built by main.go from content/, templates/ and canopy's markdown
+/public/index.html
+/public/clone/
+/public/docs/
+/public/chroma.css

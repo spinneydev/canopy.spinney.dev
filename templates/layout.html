@@ -1,0 +1,85 @@
+{{define "head"}}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{if eq .Name "home"}}canopy · a read-only web viewer for git{{else}}{{.Title}} · canopy{{end}}</title>
+<meta name="description" content="{{.Description}}">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/chroma.css">
+</head>
+{{end}}
+
+{{define "nav"}}<nav class="links">
+    <a href="/docs/"{{if eq .Name "docs"}} aria-current="page"{{end}}>Docs</a>
+    <a href="/clone/"{{if eq .Name "clone"}} aria-current="page"{{end}}>Clone</a>
+    <a href="https://git.obk.dev/">Live</a>
+    <a href="https://github.com/spinneydev/canopy">Source</a>
+  </nav>{{end}}
+
+{{/* The bar on top of every page but the home page. */}}
+{{define "bar"}}<header class="bar">
+  <a class="home" href="/"><img src="/canopy.png" alt=""> canopy</a>
+  {{template "nav" .}}
+</header>
+{{end}}
+
+{{define "foot"}}<footer>
+  canopy · <a href="https://github.com/spinneydev/canopy/blob/main/LICENSE">GPL-3.0</a> ·
+  a <a href="https://spinney.dev/">spinney</a> project ·
+  <a href="mailto:hello@spinney.dev">hello@spinney.dev</a> ·
+  no JavaScript here either
+</footer>
+
+</body>
+</html>
+{{end}}
+
+{{/* A page from content/. The home page is the name, the logo, the links
+   and a terminal running the demo, then the words; any other page is the
+   words under the bar. */}}
+{{define "layout"}}{{template "head" .}}
+<body class="{{.Name}}">
+
+{{if eq .Name "home" -}}
+<header class="hero">
+  <img class="logo" src="/canopy.png" alt="">
+  <h1>{{.Title}}</h1>
+  <p class="pitch">{{.Description}}</p>
+  {{template "nav" .}}
+  {{template "term"}}
+</header>
+{{- else -}}
+{{template "bar" .}}
+{{- end}}
+
+<main class="prose">
+{{- if ne .Name "home"}}
+  <h1>{{.Title}}</h1>
+{{- end}}
+{{.Body}}
+</main>
+
+{{template "foot"}}{{end}}
+
+{{/* The session types itself out with CSS alone: each line appears after
+   --d, and a typed command takes --n characters' worth of steps. Keep
+   typed text to plain ASCII so 1ch is one character. */}}
+{{define "term"}}<figure class="term" aria-label="Cloning canopy and running its demo">
+<pre><span class="l" style="--d:0.3s"><span class="p">$</span> <span class="t" style="--n:46">git clone https://github.com/spinneydev/canopy</span></span>
+<span class="l" style="--d:2.9s">Cloning into 'canopy'...</span>
+<span class="l" style="--d:3.3s"><span class="p">$</span> <span class="t" style="--n:9">cd canopy</span></span>
+<span class="l" style="--d:4.3s"><span class="p">$</span> <span class="t" style="--n:13">go run ./demo</span></span>
+<span class="l" style="--d:5.4s">creating demo repositories in ~/canopy/demo/repos</span>
+<span class="l" style="--d:5.8s">done. run: go run . -config demo/canopy.toml</span>
+<span class="l" style="--d:6.2s"><span class="p">$</span> <span class="t" style="--n:33">go run . -config demo/canopy.toml</span></span>
+<span class="l" style="--d:8.2s"><span class="ts">2026/10/14 12:00:00 </span>loaded config from demo/canopy.toml</span>
+<span class="l" style="--d:8.4s"><span class="ts">2026/10/14 12:00:00 </span>serving ~/canopy/demo/repos on <span class="u">127.0.0.1:8080</span></span>
+<span class="l" style="--d:8.6s"><span class="p">$</span> <span class="cursor"></span></span></pre>
+</figure>{{end}}
